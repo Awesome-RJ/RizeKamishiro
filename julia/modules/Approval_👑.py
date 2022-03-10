@@ -61,38 +61,29 @@ async def approve(event):
     reply_msg = await event.get_reply_message()
     approved_userss = approved_users.find({})
 
-    if event.is_group:
-        if not await can_approve_users(message=event):
-            return
-    else:
+    if (
+        event.is_group
+        and not await can_approve_users(message=event)
+        or not event.is_group
+    ):
         return
-
     ik = event.pattern_match.group(1)
-    if ik.isdigit():
-        input = int(ik)
-    else:
-        input = ik.replace("@", "")
-
+    input = int(ik) if ik.isdigit() else ik.replace("@", "")
     if not input:
         iid = (
             reply_msg.sender_id
             if event.reply_to_msg_id
             else await event.reply("Reply To Someone's Message Or Provide Some Input")
         )
-    elif input:
+    else:
         cunt = input
         dent = await tbot.get_entity(cunt)
         iid = dent.id
-    elif input and event.reply_to_msg_id:
-        cunt = input
-        dent = await tbot.get_entity(cunt)
-        iid = dent.id
-
     if await is_register_admin(event.input_chat, iid):
         await event.reply("Why will I approve an admin ?")
         return
 
-    if iid == event.sender_id or iid == event.sender_id:
+    if iid == event.sender_id:
         await event.reply("Why are you trying to approve yourself ?")
         print("6")
         return
@@ -123,38 +114,29 @@ async def disapprove(event):
     reply_msg = await event.get_reply_message()
     approved_userss = approved_users.find({})
 
-    if event.is_group:
-        if not await can_approve_users(message=event):
-            return
-    else:
+    if (
+        event.is_group
+        and not await can_approve_users(message=event)
+        or not event.is_group
+    ):
         return
-
     ik = event.pattern_match.group(1)
-    if ik.isdigit():
-        input = int(ik)
-    else:
-        input = ik.replace("@", "")
-
+    input = int(ik) if ik.isdigit() else ik.replace("@", "")
     if not input:
         iid = (
             reply_msg.sender_id
             if event.reply_to_msg_id
             else await event.reply("Reply To Someone's Message Or Provide Some Input")
         )
-    elif input:
+    else:
         cunt = input
         dent = await tbot.get_entity(cunt)
         iid = dent.id
-    elif input and event.reply_to_msg_id:
-        cunt = input
-        dent = await tbot.get_entity(cunt)
-        iid = dent.id
-
     if await is_register_admin(event.input_chat, iid):
         await event.reply("Why will I disapprove an admin ?")
         return
 
-    if iid == event.sender_id or iid == event.sender_id:
+    if iid == event.sender_id:
         await event.reply("Why are you trying to disapprove yourself ?")
         print("6")
         return
@@ -184,33 +166,24 @@ async def checkst(event):
     reply_msg = await event.get_reply_message()
     approved_userss = approved_users.find({})
 
-    if event.is_group:
-        if not await can_approve_users(message=event):
-            return
-    else:
+    if (
+        event.is_group
+        and not await can_approve_users(message=event)
+        or not event.is_group
+    ):
         return
-
     ik = event.pattern_match.group(1)
-    if ik.isdigit():
-        input = int(ik)
-    else:
-        input = ik.replace("@", "")
-
+    input = int(ik) if ik.isdigit() else ik.replace("@", "")
     if not input:
         iid = (
             reply_msg.sender_id
             if event.reply_to_msg_id
             else await event.reply("Reply To Someone's Message Or Provide Some Input")
         )
-    elif input:
+    else:
         cunt = input
         dent = await tbot.get_entity(cunt)
         iid = dent.id
-    elif input and event.reply_to_msg_id:
-        cunt = input
-        dent = await tbot.get_entity(cunt)
-        iid = dent.id
-
     if await is_register_admin(event.input_chat, iid):
         await event.reply("Why will check status of an admin ?")
         return
@@ -241,12 +214,12 @@ async def apprlst(event):
     sender = event.sender_id
     reply_msg = await event.get_reply_message()
 
-    if event.is_group:
-        if not await can_approve_users(message=event):
-            return
-    else:
+    if (
+        event.is_group
+        and not await can_approve_users(message=event)
+        or not event.is_group
+    ):
         return
-
     autos = approved_users.find({})
     pp = ""
     for i in autos:
@@ -254,10 +227,12 @@ async def apprlst(event):
             try:
                 h = await tbot.get_entity(i["user"])
                 getmyass = ""
-                if not h.username:
-                    getmyass += f"- [{h.first_name}](tg://user?id={h.id})\n"
-                else:
-                    getmyass += "- @" + h.username + "\n"
+                getmyass += (
+                    f"- @{h.username}" + "\n"
+                    if h.username
+                    else f"- [{h.first_name}](tg://user?id={h.id})\n"
+                )
+
                 pp += str(getmyass)
             except ValueError:
                 pass
@@ -278,10 +253,11 @@ async def disapprlst(event):
     sender = event.sender_id
     reply_msg = await event.get_reply_message()
 
-    if event.is_group:
-        if not await can_approve_users(message=event):
-            return
-    else:
+    if (
+        event.is_group
+        and not await can_approve_users(message=event)
+        or not event.is_group
+    ):
         return
     autos = approved_users.find({})
     for i in autos:

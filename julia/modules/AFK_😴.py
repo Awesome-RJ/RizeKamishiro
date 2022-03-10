@@ -53,20 +53,14 @@ async def _(event):
     if event.is_group:
         if (await is_register_admin(event.input_chat, event.message.sender_id)):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     else:
         return
 
     cmd = event.pattern_match.group(1)
 
-    if cmd is not None:
-        reason = cmd
-    else:
-        reason = ""
-
+    reason = cmd if cmd is not None else ""
     fname = sender.first_name
 
     notice = ""
@@ -102,9 +96,7 @@ async def _(event):
     if event.is_group:
         if (await is_register_admin(event.input_chat, event.message.sender_id)):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     else:
         return
@@ -151,15 +143,13 @@ async def _(event):
     if sender == userid:
         return
 
-    if event.is_group:
-        pass
-    else:
+    if not event.is_group:
         return
 
     if sql.is_afk(userid):
         user = sql.check_afk_status(userid)
+        etime = user.start_time
         if not user.reason:
-            etime = user.start_time
             elapsed_time = time.time() - float(etime)
             final = time.strftime("%Hh: %Mm: %Ss", time.gmtime(elapsed_time))
             try:
@@ -169,9 +159,7 @@ async def _(event):
             res = "**{} is AFK !**\n\n**Last seen**: {}".format(
                 fst_name, final)
 
-            await event.reply(res, parse_mode="markdown")
         else:
-            etime = user.start_time
             elapsed_time = time.time() - float(etime)
             final = time.strftime("%Hh: %Mm: %Ss", time.gmtime(elapsed_time))
             try:
@@ -180,7 +168,7 @@ async def _(event):
                 fst_name = "This user"
             res = "**{} is AFK !**\n\n**Reason**: {}\n\n**Last seen**: {}".format(
                 fst_name, user.reason, final)
-            await event.reply(res, parse_mode="markdown")
+        await event.reply(res, parse_mode="markdown")
     userid = ""  # after execution
     let = ""  # after execution
 

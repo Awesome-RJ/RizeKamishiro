@@ -54,9 +54,7 @@ async def _(event):
     if event.is_group:
         if (await is_register_admin(event.input_chat, event.message.sender_id)):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
 
     if not event.is_reply:
@@ -76,12 +74,13 @@ async def _(event):
             directory_name = downloaded_file_name
         except Exception as e:
             await mone.reply(str(e))
-    zipfile.ZipFile(directory_name + ".zip", "w", zipfile.ZIP_DEFLATED).write(
+    zipfile.ZipFile(f'{directory_name}.zip', "w", zipfile.ZIP_DEFLATED).write(
         directory_name
     )
+
     await tbot.send_file(
         event.chat_id,
-        directory_name + ".zip",
+        f'{directory_name}.zip',
         force_document=True,
         allow_cache=False,
         reply_to=event.message.id,
@@ -95,8 +94,8 @@ def zipdir(path, ziph):
             os.remove(os.path.join(root, file))
 
 
-extracted = TEMP_DOWNLOAD_DIRECTORY + "extracted/"
-thumb_image_path = TEMP_DOWNLOAD_DIRECTORY + "/thumb_image.jpg"
+extracted = f'{TEMP_DOWNLOAD_DIRECTORY}extracted/'
+thumb_image_path = f'{TEMP_DOWNLOAD_DIRECTORY}/thumb_image.jpg'
 if not os.path.isdir(extracted):
     os.makedirs(extracted)
 
@@ -113,9 +112,7 @@ async def _(event):
     if event.is_group:
         if await is_register_admin(event.input_chat, event.message.sender_id):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
 
     mone = await event.reply("Processing ...")

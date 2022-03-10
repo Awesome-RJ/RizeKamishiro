@@ -71,16 +71,15 @@ async def autoscanit(event):
             "Please provide some input yes or no.\n\nCurrent setting is : **off**"
         )
         return
-    if input in "on":
-        if event.is_group:
-            chats = scanfile.find({})
-            for c in chats:
-                if event.chat_id == c["id"]:
-                    await event.reply(
-                        "Autofilescan is already enabled for this chat.")
-                    return
-            scanfile.insert_one({"id": event.chat_id})
-            await event.reply("I will scan all incoming files for viruses from now.")
+    if input in "on" and event.is_group:
+        chats = scanfile.find({})
+        for c in chats:
+            if event.chat_id == c["id"]:
+                await event.reply(
+                    "Autofilescan is already enabled for this chat.")
+                return
+        scanfile.insert_one({"id": event.chat_id})
+        await event.reply("I will scan all incoming files for viruses from now.")
     if input in "off":
         if event.is_group:
             chats = scanfile.find({})
@@ -92,14 +91,13 @@ async def autoscanit(event):
                     return
         await event.reply(
                     "Autofilescan isn't enabled for this chat.")       
-    
-    if not input == "on" and not input == "off":
+
+    if input not in ["on", "off"]:
         await event.reply("I only understand by on or off")
         return
       
 api_instance = cloudmersive_virus_api_client.ScanApi()
-api_instance.api_client.configuration.api_key = {}
-api_instance.api_client.configuration.api_key['Apikey'] = VIRUS_API_KEY
+api_instance.api_client.configuration.api_key = {'Apikey': VIRUS_API_KEY}
 
 @register(pattern="^/scanit$")
 async def virusscan(event):
@@ -112,9 +110,7 @@ async def virusscan(event):
     if event.is_group:
         if await is_register_admin(event.input_chat, event.message.sender_id):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     if not event.reply_to_msg_id:
        await event.reply("Reply to a file to scan it.")
@@ -140,7 +136,7 @@ async def virusscan(event):
        return
     if c.video:
        await event.reply("Thats not a file.")
-       return   
+       return
     if c.poll:
        await event.reply("Thats not a file.")
        return
@@ -150,21 +146,21 @@ async def virusscan(event):
     if c.game:
        await event.reply("Thats not a file.")
        return
-   
+
     try:
-      virus = c.file.name
-      await event.client.download_file(c, virus)
-      gg= await event.reply("Scanning the file ...")
-      fsize = size(c.file.size)
-      if not fsize <= "3.5M":
-         await gg.edit("File size exceeds 3.5MB")
-         return
-      api_response = api_instance.scan_file(c.file.name)
-      if api_response.clean_result is True:
-       await gg.edit("This file is safe ✔️\nNo virus detected 🐞")
-      else:
-       await gg.edit("This file is Dangerous ☠️️\nVirus detected 🐞")
-      os.remove(virus)
+        virus = c.file.name
+        await event.client.download_file(c, virus)
+        gg= await event.reply("Scanning the file ...")
+        fsize = size(c.file.size)
+        if fsize > "3.5M":
+            await gg.edit("File size exceeds 3.5MB")
+            return
+        api_response = api_instance.scan_file(c.file.name)
+        if api_response.clean_result is True:
+         await gg.edit("This file is safe ✔️\nNo virus detected 🐞")
+        else:
+         await gg.edit("This file is Dangerous ☠️️\nVirus detected 🐞")
+        os.remove(virus)
     except Exception:
       os.remove(virus)
       await gg.edit("Some error occurred.")
@@ -172,47 +168,47 @@ async def virusscan(event):
 
 @tbot.on(events.NewMessage(pattern=None))
 async def virusscanner(event):
- chats = scanfile.find({})
- for c in chats:
-  if event.chat_id == c["id"]:
-    c = event.message
-    try:
-       c.media.document
-    except Exception:
-       return
-    if c.sticker:
-       return
-    if c.audio:
-       return
-    if c.gif:
-       return
-    if c.photo:
-       return
-    if c.video:
-       return   
-    if c.poll:
-       return
-    if c.geo:
-       return
-    if c.game:
-       return
-    try:
-      fsize = size(c.file.size)
-      if not fsize <= "3.5M":
-         return
-      virus = c.file.name
-      await event.client.download_file(c, virus)
-      gg= await event.reply("Scanning the file ...")
-      api_response = api_instance.scan_file(c.file.name)
-      print(api_response)
-      if api_response.clean_result is True:
-       await gg.edit("This file is safe ✅\nNo virus detected 🐞")
-      else:
-       await gg.edit("This file is Dangerous ⚠️\nVirus detected 🐞")
-      os.remove(virus)
-    except Exception:
-      os.remove(virus)
-      return
+    chats = scanfile.find({})
+    for c in chats:
+        if event.chat_id == c["id"]:
+            c = event.message
+            try:
+               c.media.document
+            except Exception:
+               return
+            if c.sticker:
+               return
+            if c.audio:
+               return
+            if c.gif:
+               return
+            if c.photo:
+               return
+            if c.video:
+               return
+            if c.poll:
+               return
+            if c.geo:
+               return
+            if c.game:
+               return
+            try:
+                fsize = size(c.file.size)
+                if fsize > "3.5M":
+                    return
+                virus = c.file.name
+                await event.client.download_file(c, virus)
+                gg= await event.reply("Scanning the file ...")
+                api_response = api_instance.scan_file(c.file.name)
+                print(api_response)
+                if api_response.clean_result is True:
+                 await gg.edit("This file is safe ✅\nNo virus detected 🐞")
+                else:
+                 await gg.edit("This file is Dangerous ⚠️\nVirus detected 🐞")
+                os.remove(virus)
+            except Exception:
+              os.remove(virus)
+              return
      
 
 file_help = os.path.basename(__file__)

@@ -62,9 +62,7 @@ async def who(event):
     if event.is_group:
         if await is_register_admin(event.input_chat, event.message.sender_id):
             pass
-        elif event.chat_id == iid and event.sender.id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender.id != userss:
             return
 
     if not os.path.isdir(TMP_DOWNLOAD_DIRECTORY):
@@ -172,7 +170,7 @@ async def fetch_info(replied_user, event):
         "\u2060", "") if last_name else ("This User has no Last Name")
     username = "@{}".format(username) if username else (
         "This User has no Username")
-    user_bio = "This User has no About" if not user_bio else user_bio
+    user_bio = user_bio or "This User has no About"
 
     caption = "<b>USER INFO:</b> \n"
     caption += f"First Name: {first_name} \n"
@@ -214,25 +212,23 @@ async def useridgetter(target):
     if target.is_group:
         if await is_register_admin(target.input_chat, target.message.sender_id):
             pass
-        elif target.chat_id == iid and target.sender_id == userss:
-            pass
-        else:
+        elif target.chat_id != iid or target.sender_id != userss:
             return
     message = await target.get_reply_message()
     if message:
         if not message.forward:
             user_id = message.sender.id
             if message.sender.username:
-                name = "@" + message.sender.username
+                name = f"@{message.sender.username}"
             else:
-                name = "**" + message.sender.first_name + "**"
+                name = f"**{message.sender.first_name}**"
 
         else:
             user_id = message.forward.sender.id
             if message.forward.sender.username:
-                name = "@" + message.forward.sender.username
+                name = f"@{message.forward.sender.username}"
             else:
-                name = "*" + message.forward.sender.first_name + "*"
+                name = f"*{message.forward.sender.first_name}*"
         await target.reply("**Name:** {} \n**User ID:** `{}`".format(
             name, user_id))
 
@@ -246,11 +242,9 @@ async def chatidgetter(chat):
     if chat.is_group:
         if await is_register_admin(chat.input_chat, chat.message.sender_id):
             pass
-        elif chat.chat_id == iid and chat.sender_id == userss:
-            pass
-        else:
+        elif chat.chat_id != iid or chat.sender_id != userss:
             return
-    await chat.reply("Chat ID: `" + str(chat.chat_id) + "`")
+    await chat.reply(f"Chat ID: `{str(chat.chat_id)}`")
 
 
 @register(pattern="^/runs$")
@@ -287,10 +281,7 @@ def get_readable_time(seconds: int) -> str:
 
     while count < 4:
         count += 1
-        if count < 3:
-            remainder, result = divmod(seconds, 60)
-        else:
-            remainder, result = divmod(seconds, 24)
+        remainder, result = divmod(seconds, 60) if count < 3 else divmod(seconds, 24)
         if seconds == 0 and remainder == 0:
             break
         time_list.append(int(result))
@@ -299,7 +290,7 @@ def get_readable_time(seconds: int) -> str:
     for x in range(len(time_list)):
         time_list[x] = str(time_list[x]) + time_suffix_list[x]
     if len(time_list) == 4:
-        ping_time += time_list.pop() + ", "
+        ping_time += f'{time_list.pop()}, '
 
     time_list.reverse()
     ping_time += ":".join(time_list)
@@ -316,7 +307,7 @@ async def ping(event):
     await message.edit("Pinging ...")
     end_time = datetime.datetime.now()
     pingtime = end_time - start_time
-    telegram_ping = str(round(pingtime.total_seconds(), 2)) + "s"
+    telegram_ping = f'{str(round(pingtime.total_seconds(), 2))}s'
     uptime = get_readable_time((time.time() - StartTime))
     await message.edit(
         "PONG !\n"
@@ -333,10 +324,7 @@ async def _(event):
     if int(check) != int(OWNER_ID):
         return
     cmd = event.text.split(" ", maxsplit=1)[1]
-    reply_to_id = event.message.id
-    if event.reply_to_msg_id:
-        reply_to_id = event.reply_to_msg_id
-
+    reply_to_id = event.reply_to_msg_id or event.message.id
     old_stderr = sys.stderr
     old_stdout = sys.stdout
     redirected_output = sys.stdout = io.StringIO()
@@ -405,10 +393,7 @@ async def _(event):
     if int(check) != int(OWNER_ID):
         return
     cmd = event.text.split(" ", maxsplit=1)[1]
-    reply_to_id = event.message.id
-    if event.reply_to_msg_id:
-        reply_to_id = event.reply_to_msg_id
-
+    reply_to_id = event.reply_to_msg_id or event.message.id
     old_stderr = sys.stderr
     old_stdout = sys.stdout
     redirected_output = sys.stdout = io.StringIO()
@@ -463,9 +448,7 @@ async def cmndlist(event):
     if event.is_group:
         if await is_register_admin(event.input_chat, event.message.sender_id):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     await event.reply("Click on the below button to get the list of commands 👇", buttons=[[Button.url('Command List', 'https://telegra.ph/Command-List-11-25')]])
 

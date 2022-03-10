@@ -31,11 +31,7 @@ def get_reason(id):
 async def _(event):
     if event.fwd_from:
         return
-    if event.sender_id in SUDO_USERS:
-        pass
-    elif event.sender_id == OWNER_ID:
-        pass
-    else:
+    if event.sender_id not in SUDO_USERS and event.sender_id != OWNER_ID:
         return
 
     quew = event.pattern_match.group(1)
@@ -77,11 +73,7 @@ async def _(event):
 async def _(event):
     if event.fwd_from:
         return
-    if event.sender_id in SUDO_USERS:
-        pass
-    elif event.sender_id == OWNER_ID:
-        pass
-    else:
+    if event.sender_id not in SUDO_USERS and event.sender_id != OWNER_ID:
         return
 
     quew = event.pattern_match.group(1)
@@ -118,7 +110,6 @@ async def join_ban(event):
         return
     if event.chat_id == "-1001342790946":
         return
-    pass
     if event.user_joined:
         try:
             user = await event.get_user()
@@ -139,7 +130,6 @@ async def type_ban(event):
         return
     if event.chat_id == "-1001342790946":
         return
-    pass
     chats = gbanned.find({})
     for c in chats:
         if event.sender_id == c["user"]:

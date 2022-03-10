@@ -58,7 +58,5 @@ def four_point_transform(image, pts):
 
     # compute the perspective transform matrix and then apply it
     M = cv2.getPerspectiveTransform(rect, dst)
-    warped = cv2.warpPerspective(image, M, (maxWidth, maxHeight))
-
     # return the warped image
-    return warped
+    return cv2.warpPerspective(image, M, (maxWidth, maxHeight))

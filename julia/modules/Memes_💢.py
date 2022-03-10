@@ -74,9 +74,7 @@ async def msg(event):
     if event.is_group:
         if (await is_register_admin(event.input_chat, event.message.sender_id)):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     reply_tex = await event.get_reply_message()
     reply_text = reply_tex.text
@@ -109,11 +107,11 @@ async def msg(event):
     text = re.sub(r"ｎ([ａｅｉｏｕ])", r"ｎｙ\1", text)
     text = re.sub(r"N([aeiouAEIOU])", r"Ny\1", text)
     text = re.sub(r"Ｎ([ａｅｉｏｕＡＥＩＯＵ])", r"Ｎｙ\1", text)
-    text = re.sub(r"\!+", " " + random.choice(faces), text)
-    text = re.sub(r"！+", " " + random.choice(faces), text)
+    text = re.sub(r"\!+", f" {random.choice(faces)}", text)
+    text = re.sub(r"！+", f" {random.choice(faces)}", text)
     text = text.replace("ove", "uv")
     text = text.replace("ｏｖｅ", "ｕｖ")
-    text += " " + random.choice(faces)
+    text += f" {random.choice(faces)}"
     await event.reply(text)
 
 
@@ -126,9 +124,7 @@ async def msg(event):
     if event.is_group:
         if (await is_register_admin(event.input_chat, event.message.sender_id)):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     rtex = await event.get_reply_message()
     rtext = rtex.text
@@ -176,10 +172,7 @@ async def msg(event):
         elif c.lower() == b_char:
             reply_text += "🅱️"
         else:
-            if bool(random.getrandbits(1)):
-                reply_text += c.upper()
-            else:
-                reply_text += c.lower()
+            reply_text += c.upper() if bool(random.getrandbits(1)) else c.lower()
     reply_text += random.choice(emojis)
     await event.reply(reply_text)
 
@@ -193,9 +186,7 @@ async def msg(event):
     if event.is_group:
         if (await is_register_admin(event.input_chat, event.message.sender_id)):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     rtex = await event.get_reply_message()
     rtext = rtex.text
@@ -216,9 +207,7 @@ async def msg(event):
     if event.is_group:
         if (await is_register_admin(event.input_chat, event.message.sender_id)):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     rtex = await event.get_reply_message()
     rtext = rtex.text
@@ -240,9 +229,7 @@ async def msg(event):
     if event.is_group:
         if (await is_register_admin(event.input_chat, event.message.sender_id)):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     rtex = await event.get_reply_message()
     rtext = rtex.text
@@ -265,17 +252,11 @@ async def msg(event):
     if event.is_group:
         if (await is_register_admin(event.input_chat, event.message.sender_id)):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
 
     rtex = await event.get_reply_message()
-    rtext = rtex.text
-    if rtext:
-        data = rtext
-    else:
-        data = event.pattern_match.group(1)
+    data = rtext if (rtext := rtex.text) else event.pattern_match.group(1)
     if data is None:
         await event.reply("Either provide some input or reply to a message.")
         return
@@ -293,9 +274,7 @@ async def msg(event):
     if event.is_group:
         if (await is_register_admin(event.input_chat, event.message.sender_id)):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     rtex = await event.get_reply_message()
     rtext = rtex.text
@@ -315,9 +294,7 @@ async def msg(event):
     if event.is_group:
         if (await is_register_admin(event.input_chat, event.message.sender_id)):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     rtex = await event.get_reply_message()
     rtext = rtex.text
@@ -352,9 +329,7 @@ async def msg(event):
     if event.is_group:
         if (await is_register_admin(event.input_chat, event.message.sender_id)):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
 
     rtext = event.pattern_match.group(1)
@@ -367,10 +342,12 @@ async def msg(event):
 
     msg = "```"
     text = " ".join(args)
-    result = []
-    result.append(" ".join(list(text)))
-    for pos, symbol in enumerate(text[1:]):
-        result.append(symbol + " " + "  " * pos + symbol)
+    result = [" ".join(list(text))]
+    result.extend(
+        f'{symbol} ' + "  " * pos + symbol
+        for pos, symbol in enumerate(text[1:])
+    )
+
     result = list("\n".join(result))
     result[0] = text[0]
     result = "".join(result)
@@ -387,9 +364,7 @@ async def msg(event):
     if event.is_group:
         if (await is_register_admin(event.input_chat, event.message.sender_id)):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     rtex = await event.get_reply_message()
     rtext = rtex.text
@@ -398,10 +373,7 @@ async def msg(event):
         return
     reply_text = "😡 "
     for i in rtext:
-        if i == " ":
-            reply_text += " 😡 "
-        else:
-            reply_text += i
+        reply_text += " 😡 " if i == " " else i
     reply_text += " 😡"
     await event.reply(reply_text)
 
@@ -415,9 +387,7 @@ async def msg(event):
     if event.is_group:
         if (await is_register_admin(event.input_chat, event.message.sender_id)):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     rtex = await event.get_reply_message()
     rtext = rtex.text
@@ -426,10 +396,7 @@ async def msg(event):
         return
     reply_text = "😭 "
     for i in rtext:
-        if i == " ":
-            reply_text += " 😭 "
-        else:
-            reply_text += i
+        reply_text += " 😭 " if i == " " else i
     reply_text += " 😭"
     await event.reply(reply_text)
 
@@ -447,9 +414,7 @@ async def carbon_api(e):
     if e.is_group:
         if (await is_register_admin(e.input_chat, e.message.sender_id)):
             pass
-        elif e.chat_id == iid and e.sender_id == userss:
-            pass
-        else:
+        elif e.chat_id != iid or e.sender_id != userss:
             return
 
     jj = "`Processing..`"
@@ -513,9 +478,7 @@ async def deepfryer(event):
     if event.is_group:
         if (await is_register_admin(event.input_chat, event.message.sender_id)):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     try:
         frycount = int(event.pattern_match.group(1))
@@ -578,25 +541,22 @@ async def deepfry(img: Image) -> Image:
 
 
 async def check_media(reply_message):
-    if reply_message and reply_message.media:
-        if reply_message.photo:
-            data = reply_message.photo
-        elif reply_message.document:
-            if (
-                DocumentAttributeFilename(file_name="AnimatedSticker.tgs")
-                in reply_message.media.document.attributes
-            ):
-                return False
-            if (
-                reply_message.gif
-                or reply_message.video
-                or reply_message.audio
-                or reply_message.voice
-            ):
-                return False
-            data = reply_message.media.document
-        else:
+    if reply_message and reply_message.media and reply_message.photo:
+        data = reply_message.photo
+    elif reply_message and reply_message.media and reply_message.document:
+        if (
+            DocumentAttributeFilename(file_name="AnimatedSticker.tgs")
+            in reply_message.media.document.attributes
+        ):
             return False
+        if (
+            reply_message.gif
+            or reply_message.video
+            or reply_message.audio
+            or reply_message.voice
+        ):
+            return False
+        data = reply_message.media.document
     else:
         return False
     if not data or data is None:
@@ -613,15 +573,11 @@ async def typewriter(typew):
     if typew.is_group:
         if await is_register_admin(typew.input_chat, typew.message.sender_id):
             pass
-        elif typew.chat_id == iid and typew.sender_id == userss:
-            pass
-        else:
+        elif typew.chat_id != iid or typew.sender_id != userss:
             return
 
     message = typew.pattern_match.group(1)
-    if message:
-        pass
-    else:
+    if not message:
         await typew.reply("`Give a text to type!`")
         return
     typing_symbol = "|"
@@ -629,8 +585,8 @@ async def typewriter(typew):
     now = await typew.reply(typing_symbol)
     await asyncio.sleep(2)
     for character in message:
-        old_text = old_text + "" + character
-        typing_text = old_text + "" + typing_symbol
+        old_text = f'{old_text}{character}'
+        typing_text = f'{old_text}{typing_symbol}'
         await now.edit(typing_text)
         await asyncio.sleep(2)
         await now.edit(old_text)
@@ -646,9 +602,7 @@ async def sticklet(event):
     if event.is_group:
         if await is_register_admin(event.input_chat, event.message.sender_id):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     R = random.randint(0, 256)
     G = random.randint(0, 256)
@@ -728,9 +682,7 @@ async def univsaye(cowmsg):
         if await is_register_admin(cowmsg.input_chat,
                                    cowmsg.message.sender_id):
             pass
-        elif cowmsg.chat_id == iid and cowmsg.sender_id == userss:
-            pass
-        else:
+        elif cowmsg.chat_id != iid or cowmsg.sender_id != userss:
             return
     """ For .cowsay module, uniborg wrapper for cow which says things. """
     if not cowmsg.text[0].isalpha() and cowmsg.text[0] not in ("#", "@"):
@@ -758,16 +710,14 @@ async def _(event):
     if event.is_group:
         if await is_register_admin(event.input_chat, event.message.sender_id):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     input_str = print(randrange(6))
     r = await event.reply(file=InputMediaDice("🏀"))
     if input_str:
         try:
             required_number = int(input_str)
-            while not r.media.value == required_number:
+            while r.media.value != required_number:
                 await r.delete()
                 r = await event.reply(file=InputMediaDice("🏀"))
         except BaseException:
@@ -784,9 +734,7 @@ async def _(event):
     if event.is_group:
         if await is_register_admin(event.input_chat, event.message.sender_id):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     await event.reply(file=InputMediaDice("🎰"))
 
@@ -802,16 +750,14 @@ async def _(event):
     if event.is_group:
         if await is_register_admin(event.input_chat, event.message.sender_id):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     input_str = print(randrange(7))
     r = await event.reply(file=InputMediaDice("🎯"))
     if input_str:
         try:
             required_number = int(input_str)
-            while not r.media.value == required_number:
+            while r.media.value != required_number:
                 await r.delete()
                 r = await event.reply(file=InputMediaDice("🎯"))
         except BaseException:

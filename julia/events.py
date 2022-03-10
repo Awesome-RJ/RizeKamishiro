@@ -56,9 +56,7 @@ def register(**args):
                 return
             if check.fwd_from:
                 return
-            if check.is_group or check.is_private:
-                pass
-            else:
+            if not check.is_group and not check.is_private:
                 print("i don't work in channels")
                 return
 
@@ -80,8 +78,6 @@ def register(**args):
                     LOAD_PLUG.update({file_test: [func]})
             except BaseException:
                 return
-            else:
-                pass
 
         tbot.add_event_handler(wrapper, events.NewMessage(**args))
         return wrapper
@@ -138,8 +134,6 @@ def juliabot(**args):
                 pass
             except BaseException as e:
                 print(e)
-            else:
-                pass
 
         if not disable_edited:
             ubot.add_event_handler(wrapper, events.MessageEdited(**args))
@@ -161,7 +155,7 @@ def load_module(shortname):
         spec = importlib.util.spec_from_file_location(name, path)
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
-        print("Successfully imported " + shortname)
+        print(f"Successfully imported {shortname}")
     else:
         import importlib
         import julia.events
@@ -175,8 +169,8 @@ def load_module(shortname):
         mod.tbot = tbot
         mod.logger = logging.getLogger(shortname)
         spec.loader.exec_module(mod)
-        sys.modules["julia.modules." + shortname] = mod
-        print("Successfully imported " + shortname)
+        sys.modules[f"julia.modules.{shortname}"] = mod
+        print(f"Successfully imported {shortname}")
 
 
 path = "julia/modules/*.py"

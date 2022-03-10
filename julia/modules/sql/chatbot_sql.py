@@ -719,8 +719,7 @@ def get_ses(chat_id):
 
 def rem_chat(chat_id):
     with INSERTION_LOCK:
-        autochat = SESSION.query(ChatbotChats).get(str(chat_id))
-        if autochat:
+        if autochat := SESSION.query(ChatbotChats).get(str(chat_id)):
             SESSION.delete(autochat)
 
         SESSION.commit()

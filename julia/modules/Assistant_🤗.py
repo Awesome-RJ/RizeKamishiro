@@ -55,16 +55,14 @@ async def _(event):
     if event.is_group:
         if await is_register_admin(event.input_chat, event.message.sender_id):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
     if not event.reply_to_msg_id:
         i = event.pattern_match.group(1)
         appid = WOLFRAM_ID
         server = f"https://api.wolframalpha.com/v1/spoken?appid={appid}&i={i}"
         res = get(server)
-        await event.reply(f"**{i}**\n\n" + res.text, parse_mode="Markdown")
+        await event.reply(f"**{i}**\n\n{res.text}", parse_mode="Markdown")
 
     if event.reply_to_msg_id:
         previous_message = await event.get_reply_message()
@@ -80,11 +78,12 @@ async def _(event):
             }
             data = open(required_file_name, "rb").read()
             response = requests.post(
-                IBM_WATSON_CRED_URL + "/v1/recognize",
+                f'{IBM_WATSON_CRED_URL}/v1/recognize',
                 headers=headers,
                 data=data,
                 auth=("apikey", IBM_WATSON_CRED_PASSWORD),
             )
+
             r = response.json()
             if "results" in r:
                 # process the json to appropriate string format
@@ -104,43 +103,27 @@ async def _(event):
                     try:
                         tts = gTTS(answer, tld="com", lang="en")
                         tts.save("results.mp3")
-                    except AssertionError:
-                        return
-                    except ValueError:
-                        return
-                    except RuntimeError:
+                    except (AssertionError, ValueError, RuntimeError):
                         return
                     except gTTSError:
                         return
-                    with open("results.mp3", "r"):
-                        await tbot.send_file(
-                            event.chat_id,
-                            "results.mp3",
-                            voice_note=True,
-                            reply_to=event.id,
-                        )
-                    os.remove("results.mp3")
                 else:
                     try:
                         answer = "Sorry I can't recognise your query"
                         tts = gTTS(answer, tld="com", lang="en")
                         tts.save("results.mp3")
-                    except AssertionError:
-                        return
-                    except ValueError:
-                        return
-                    except RuntimeError:
+                    except (AssertionError, ValueError, RuntimeError):
                         return
                     except gTTSError:
                         return
-                    with open("results.mp3", "r"):
-                        await tbot.send_file(
-                            event.chat_id,
-                            "results.mp3",
-                            voice_note=True,
-                            reply_to=event.id,
-                        )
-                    os.remove("results.mp3")
+                with open("results.mp3", "r"):
+                    await tbot.send_file(
+                        event.chat_id,
+                        "results.mp3",
+                        voice_note=True,
+                        reply_to=event.id,
+                    )
+                os.remove("results.mp3")
             else:
                 await event.reply("API Failure !")
                 os.remove(required_file_name)
@@ -157,9 +140,7 @@ async def howdoi(event):
     if event.is_group:
         if await is_register_admin(event.input_chat, event.message.sender_id):
             pass
-        elif event.chat_id == iid and event.sender_id == userss:
-            pass
-        else:
+        elif event.chat_id != iid or event.sender_id != userss:
             return
 
     str = event.pattern_match.group(1)

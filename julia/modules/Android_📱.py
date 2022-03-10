@@ -52,9 +52,7 @@ async def device_info(request):
     if request.is_group:
         if (await is_register_admin(request.input_chat, request.message.sender_id)):
             pass
-        elif request.chat_id == iid and request.sender_id == userss:
-            pass
-        else:
+        elif request.chat_id != iid or request.sender_id != userss:
             return
     """ get android device basic info from its codename """
     textx = await request.get_reply_message()
@@ -72,8 +70,7 @@ async def device_info(request):
             "certified-android-devices/master/by_device.json"
         ).text
     )
-    results = data.get(codename)
-    if results:
+    if results := data.get(codename):
         reply = f"**Search results for {codename}**:\n\n"
         for item in results:
             reply += (
@@ -95,9 +92,7 @@ async def codename_info(request):
     if request.is_group:
         if (await is_register_admin(request.input_chat, request.message.sender_id)):
             pass
-        elif request.chat_id == iid and request.sender_id == userss:
-            pass
-        else:
+        elif request.chat_id != iid or request.sender_id != userss:
             return
     """ search for android codename """
     textx = await request.get_reply_message()
@@ -121,12 +116,12 @@ async def codename_info(request):
     )
     devices_lower = {k.lower(): v for k, v in data.items()}
     devices = devices_lower.get(brand)
-    results = [
+    if results := [
         i
         for i in devices
-        if i["name"].lower() == device.lower() or i["model"].lower() == device.lower()
-    ]
-    if results:
+        if i["name"].lower() == device.lower()
+        or i["model"].lower() == device.lower()
+    ]:
         reply = f"**Search results for {brand} {device}**:\n\n"
         if len(results) > 8:
             results = results[:8]
@@ -150,9 +145,7 @@ async def devices_specifications(request):
     if request.is_group:
         if (await is_register_admin(request.input_chat, request.message.sender_id)):
             pass
-        elif request.chat_id == iid and request.sender_id == userss:
-            pass
-        else:
+        elif request.chat_id != iid or request.sender_id != userss:
             return
     """ Mobile devices specifications """
     textx = await request.get_reply_message()
@@ -221,9 +214,7 @@ async def twrp(request):
     if request.is_group:
         if (await is_register_admin(request.input_chat, request.message.sender_id)):
             pass
-        elif request.chat_id == iid and request.sender_id == userss:
-            pass
-        else:
+        elif request.chat_id != iid or request.sender_id != userss:
             return
 
     """ get android device twrp """
